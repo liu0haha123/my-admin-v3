@@ -47,15 +47,21 @@
 import { Icon } from "tdesign-vue-next";
 import { reactive, onMounted } from "vue";
 import type { TokenRequest } from "@/api/types";
-import createToken from "@/api/token";
+import tokenAPI from "@/api/token";
 const rules = {
   username: [{ required: true, message: "请填写用户名" }],
   password: [{ required: true, message: "请填写密码" }],
 };
 
 const loginForm = reactive<TokenRequest>({
-  username: "",
-  password: "",
+  username: "admin",
+  password: "admin1233",
+});
+
+onMounted(() => {
+  tokenAPI.createToken(loginForm).then((res) => {
+    console.log(res);
+  });
 });
 </script>
 
