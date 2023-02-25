@@ -10,6 +10,7 @@
           class="login-form"
           :colon="true"
           :label-width="0"
+          @submit="handleLogin"
         >
           <t-form-item name="username">
             <t-input
@@ -35,7 +36,9 @@
             </t-input>
           </t-form-item>
           <t-form-item style="padding-top: 8px">
-            <t-button theme="primary" type="submit" block>登录</t-button>
+            <t-button theme="primary" type="submit" block :loading="loading"
+              >登录</t-button
+            >
           </t-form-item>
         </t-form>
       </t-card>
@@ -44,25 +47,36 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from "tdesign-vue-next";
-import { reactive, onMounted } from "vue";
+import { Icon, type SubmitContext, MessagePlugin } from "tdesign-vue-next";
+import { reactive, ref } from "vue";
 import type { TokenRequest } from "@/api/types";
-import tokenAPI from "@/api/token";
+import { useAppStore } from "../../store/app";
+import { useRouter } from "vue-router";
 const rules = {
   username: [{ required: true, message: "请填写用户名" }],
   password: [{ required: true, message: "请填写密码" }],
 };
 
 const loginForm = reactive<TokenRequest>({
-  username: "admin",
-  password: "admin1233",
+  username: "",
+  password: "",
 });
-
-onMounted(() => {
-  tokenAPI.createToken(loginForm).then((res) => {
-    console.log(res);
-  });
-});
+const appStore = useAppStore();
+const loading = ref(false);
+const router = useRouter();
+const handleLogin = async ({ validateResult }: SubmitContext) => {
+  if (validateResult !== true) {
+    return;
+  }
+  loading.value = true;
+  try {
+    await appStore.login(loginForm);
+    await MessagePlugin.success("登录成功");
+    await router.push({ name: "dashboard" });
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -73,11 +87,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+
   .content {
     width: 400px;
+
     h1 {
       text-align: center;
     }
+
     .login-form {
       margin: 20px 0;
     }

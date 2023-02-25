@@ -2,6 +2,7 @@ import type { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import axios from "axios";
 import { MessagePlugin } from "tdesign-vue-next";
 import type { ErrorResponse } from "./types";
+
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
 
 const instance: AxiosInstance = axios.create({
