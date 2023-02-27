@@ -7,4 +7,11 @@ type ErrorResponse = {
   code: number;
   message: string;
 };
-export type { TokenRequest, ErrorResponse };
+
+type UserType = {
+  username: string;
+  nickname: string;
+  roles: string[];
+  permissions: string[];
+}
+export type { TokenRequest, ErrorResponse,UserType };
