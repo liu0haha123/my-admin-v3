@@ -1,16 +1,17 @@
-import type { , AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
+import type { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
+import type { ErrorResponse } from "@/api/types";
 import { MessagePlugin } from "tdesign-vue-next";
-import type { ErrorResponse } from "./types";
-import { useAppStore } from '../store/app';
+import { useAppStore } from "@/store";
 
 const BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
 
 const instance: AxiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 60000, // 60s以上请求失败
+  timeout: 60000,
 });
-const tokenPrefix = "Bearer "
+const tokenPrefix = "Bearer ";
 
 instance.interceptors.request.use((request) => {
   const appStore = useAppStore();
@@ -19,18 +20,21 @@ instance.interceptors.request.use((request) => {
   }
   return request;
 });
+
 instance.interceptors.response.use(
-  (res: AxiosResponse) => {
-    return res.data;
+  (response: AxiosResponse) => {
+    return response.data;
   },
-  async (err: AxiosError<ErrorResponse>) => {
-    const resData: ErrorResponse | undefined = err.response?.data;
-    resData && (await MessagePlugin.error(resData.message));
-    if (err.response?.status === 401) {
+  async (error: AxiosError<ErrorResponse>) => {
+    const responseData: ErrorResponse | undefined = error.response?.data;
+    responseData && (await MessagePlugin.error(responseData.message));
+
+    if (error.response?.status === 401) {
       const appStore = useAppStore();
       await appStore.logout();
     }
-    return Promise.reject(err);
+    return Promise.reject(error);
   }
 );
+
 export default instance;

@@ -47,12 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import { Icon, type SubmitContext, MessagePlugin } from "tdesign-vue-next";
+import { Icon, MessagePlugin } from "tdesign-vue-next";
+import type { SubmitContext } from "tdesign-vue-next";
 import { reactive, ref } from "vue";
 import type { TokenRequest } from "@/api/types";
-import { useAppStore } from "../../store/app";
+import { useAppStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
-import { useUserStore } from '../../store/user';
 const rules = {
   username: [{ required: true, message: "请填写用户名" }],
   password: [{ required: true, message: "请填写密码" }],

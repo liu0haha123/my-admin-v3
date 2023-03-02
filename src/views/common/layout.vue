@@ -1,7 +1,7 @@
 <template>
   <div>
     <t-layout class="main-layout">
-      <t-aside>侧边栏</t-aside>
+      <sidebar></sidebar>
       <t-layout>
         <global-header></global-header>
         <t-content><router-view></router-view></t-content>
@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import GlobalHeader from "./header.vue"
+import Sidebar from "./sidebar.vue";
 </script>
 
 <style scoped lang="less">
